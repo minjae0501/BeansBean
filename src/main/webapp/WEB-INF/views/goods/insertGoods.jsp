@@ -2,11 +2,6 @@
     pageEncoding="UTF-8"%>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script>
-<style>
-	li {list-style: none;
-		padding: 5px;}
-	span {padding-right: 30px;}
-</style>
 <script type="text/javascript">
 	$(function() {
 		$("#image").change(function() {//gimage 변경
@@ -30,18 +25,18 @@
 		
 		 $("#vADD").click(function() {//제품종류 input 추가
 			 event.preventDefault();
-			 if ($("#Variation").children("#emptyVariation").length != 0) {	
-				$("#Variation").children("#emptyVariation").remove();
+			 if ($("#variDIV").children("#emptyVariation").length != 0) {	
+				$("#variDIV").children("#emptyVariation").remove();
 			}
-			$("#Variation").append("<li class='VRI'>종류:<span><input type='text' name='vcategory'></span></li>");
+			$("#variDIV").append("<li class='VRI'>종류:<span><input type='text' class='variations'></span></li>");
 		}); //vADD end
 			
 		 $("#bADD").click(function() {//번들 input 추가
 			 event.preventDefault();
-			if ($("#Bundle").children("#emptyBundle").length != 0) {	
-				$("#Bundle").children("#emptyBundle").remove();
+			if ($("#bundleDIV").children("#emptyBundle").length != 0) {	
+				$("#bundleDIV").children("#emptyBundle").remove();
 			}
-			$("#Bundle").append("<li class='BUD'>번들:<span><input type='text' name='bcategory'></span> 번들가격:<span><input type='text' name='bprice'></span></li>");
+			$("#bundleDIV").append("<li class='BUD'>번들:<span><input type='text' class='bcategory'></span> 번들가격:<span><input type='text' class='bprice'></span></li>");
 			}); //bADD end
 		
 	
@@ -63,16 +58,16 @@
 
 		$("#vDEL").click(function() {
 			event.preventDefault();
-			$("#Variation").children(".VRI").last().remove();
-			if ($("#Variation").children(".VRI").length == 0 && $("#Variation").children("#emptyVariation").length == 0) {	
-				$("#Variation").append("<li id='emptyVariation'>종류없음</li>");
+			$("#variDIV").children(".VRI").last().remove();
+			if ($("#variDIV").children(".VRI").length == 0 && $("#variDIV").children("#emptyVariation").length == 0) {	
+				$("#variDIV").append("<li id='emptyVariation'>종류없음</li>");
 			}
 		});
 		$("#bDEL").click(function() {
 			event.preventDefault();
-			$("#Bundle").children(".BUD").last().remove();
-			if ($("#Bundle").children(".BUD").length == 0 && $("#Bundle").children("#emptyBundle").length == 0) {	
-				$("#Bundle").append("<li id='emptyBundle'>번들없음</li>");
+			$("#bundleDIV").children(".BUD").last().remove();
+			if ($("#bundleDIV").children(".BUD").length == 0 && $("#bundleDIV").children("#emptyBundle").length == 0) {	
+				$("#bundleDIV").append("<li id='emptyBundle'>번들없음</li>");
 			}
 		});
 		
@@ -104,28 +99,12 @@
 				$("#gcode").focus();
 				event.preventDefault();
 			}else {
-				goodsInsert(); //상품저장
 				imageUpload();	//이미지 저장
 				insertVariation(); //종류 저장
 				insertBundle();	//번들 저장
-				location.href = "afterInsert"; //저장 후에 변경완료페이지로 이동
+				$("#goodsForm").submit();	
 			}
 		}
-		
-	
-	   function goodsInsert(){//제품 db추가
-	    	var queryString = $("#goodsForm").serialize() ;
-	    	$.ajax({
-	    		type : 'post', 
-	    		url : 'insertGoods', 
-	    		data : queryString, 
-	    		dataType : 'json' ,
-	    		async:false
-	    		});
-	  
-	    }
-	
-
 	
 	function imageUpload() {//이미지 저장, imageUpload의 dir변경
 		var form = new FormData();
@@ -146,36 +125,33 @@
 	}//imageUpload end
 	
 	
-	function insertVariation() {//each를 이용해서  variation 저장
-		var gcode = $("#gcode").val();
+	function insertVariation() {//variation 입력
 		$(".VRI").each(function(i, element) {
-			var vcategory = $(this).children("input[name=vcategory]").val();
-		$.ajax({
-			url:"insertVariation",
-			type: "get",
-			async:false,
-			data: {gcode: gcode , vcategory : vcategory}, 
-			dataType: "text"
-		});//end ajax
+			var vri = $(this).find(".variations").val(); //추가하는 variation
+			var prevariation = $("#variation").val();	//기존 variation
+			if (prevariation.length == 0) {
+				$("#variation").val(vri);
+			}else {
+				$("#variation").val(prevariation+"/"+vri);
+			}
 		});//each end
 	}//insertVariation end
 	
-	function insertBundle() {//bundle 저장
-		var gcode = $("#gcode").val();
+	function insertBundle() {//bundle 입력
 		$(".BUD").each(function(i, element) {
-			var bcategory = $(this).children("input[name=bcategory]").val();
-			var bprice = $(this).children("input[name=bprice]").val();
-			$.ajax({
-				url:"insertBundle",
-				type: "get",
-				async:false,	//비동기처리
-				data: {gcode: gcode, bcategory : bcategory, bprice: bprice }, 
-				dataType: "text"
-			});//end ajax
+			var bcategory = $(this).find(".bcategory").val();
+			var bprice = $(this).find(".bprice").val();
+			var prebundle = $("#bundle").val();
+			if (prebundle.length == 0) {
+				$("#bundle").val(bcategory+":"+bprice);
+			}else {
+				$("#bundle").val(prebundle + "/"+bcategory+":"+bprice);
+			}
 		});//each end
 	}//insertBundle end
 
 </script>
+
 <div>
 <ul>
 <li>제품이미지: <span><input type="file" name="file" id="image"> </span></li>
@@ -183,8 +159,10 @@
 </div>
 <hr>
 
-<form id="goodsForm">
+<form id="goodsForm" action="goodsInsert">
 <input type="hidden" name="gimage" id="gimage" value="null">
+<input type="hidden" name="variation" id="variation">
+<input type="hidden" name="bundle" id="bundle" >
 <div>
 <ul>
 <li>제품코드:<span><input type="text" name="gcode" id="gcode"></span>
@@ -200,7 +178,7 @@
 <li>제품 재고:<span><input type="text" name="gamount" id="gamount"></span></li>
 
 <li>
-<div id="Variation">
+<div id="variDIV">
 	<span id="emptyVariation">종류없음</span>
 </div>
 <button id="vADD" >종류추가</button>
@@ -208,7 +186,7 @@
 </li>
 
 <li>
-<div id="Bundle">
+<div id="bundleDIV">
 <span id="emptyBundle">번들없음</span>
 </div>
 <button id="bADD">번들추가</button>

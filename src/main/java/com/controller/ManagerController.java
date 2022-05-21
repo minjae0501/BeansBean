@@ -35,21 +35,14 @@ public class ManagerController {
 		return model;
 	}
 	
-	@ResponseBody	//제품 수정
 	@RequestMapping(value = "goodsUpdate")
-	public void goodsUpdate(GoodsDTO gDTO) {
+	public String goodsUpdate(GoodsDTO gDTO) {
 		System.out.println(gDTO);
 		service.goodsUpdate(gDTO);
+		return "redirect:CtrlGoods";
 		
 	}
 	
-	@ResponseBody	//종류, 번들 삭제
-	@RequestMapping(value = "delVriBud")
-	public void delVriBud(String gcode) {
-		service.variationDelete(gcode);
-		service.bundleDelete(gcode);
-		
-	}
 	
 	@ResponseBody	//제품삭제
 	@RequestMapping(value = "goodsDelete")
@@ -61,19 +54,22 @@ public class ManagerController {
 	@RequestMapping(value="/goodsUpdatePage")
 	public ModelAndView goodsUpdatePage(String gcode) {
 		GoodsDTO gdto = service.goodsinfo(gcode);
+		String[] variation = gdto.getVariation().split("/");
+		String[] bundle = gdto.getBundle().split("/");
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("gdto", gdto);
+		mav.addObject("vlist", variation);
+		mav.addObject("blist", bundle);
 		mav.setViewName("goodsPage");
 		
 		return mav;
 	}
 	
-	@ResponseBody	//제품등록
-	@RequestMapping(value = "insertGoods", method = RequestMethod.POST)
-	public void insertGoods(GoodsDTO gDTO, Model model) {
+	@RequestMapping(value = "goodsInsert")//제품등록
+	public String goodsInsert(GoodsDTO gDTO) {
 		System.out.println(gDTO);		
 		service.goodsADD(gDTO);
-		model.addAttribute("success","제품 등록 성공");
+		return "afterInsert"; //저장후 afterInsert로 이동
 	}
 	
 	@ResponseBody	//이미지 이름 추출

@@ -23,7 +23,12 @@
 	
 	<!-- ------------------------------------------------- -->
 제품 등록이 완료되었습니다.
-<a href="/beans">홈페이지로 이동</a>
-<a href="goodsinsert">추가 등록하기</a>
+<div>
+<ul>
+<li><a href="/beansbean">홈페이지로 이동</a></li>
+<li><a href="insertGoods">추가 등록하기</a></li>
+<li><a href="CtrlGoods">상품관리로 이동</a></li>
+</ul>
+</div>
 </body>
 </html>

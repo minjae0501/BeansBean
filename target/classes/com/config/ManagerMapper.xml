@@ -5,8 +5,8 @@
 <mapper namespace="ManagerMapper">
 
 <insert id="goodsADD" parameterType="GoodsDTO">
-     insert into goods (gcode,gcategory,gname,gprice,gamount,gimage)
-     values( #{gcode},#{gcategory},#{gname},#{gprice},#{gamount},#{gimage})
+     insert into goods (gcode,gcategory,gname,gprice,variation,bundle,gamount,gimage)
+     values( #{gcode},#{gcategory},#{gname},#{gprice},#{variation},#{bundle},#{gamount},#{gimage})
    </insert>
 
 
@@ -25,7 +25,7 @@
 
 <update id="goodsUpdate" parameterType="GoodsDTO">
   	update goods 
-  	set gcategory =#{gcategory}, gname =#{gname}, gprice =#{gprice}, gamount =#{gamount}, gimage =#{gimage}
+  	set gcategory =#{gcategory}, gname =#{gname}, gprice =#{gprice},variation =#{variation},bundle =#{bundle}, gamount =#{gamount}, gimage =#{gimage}
   	 where gcode = #{gcode}
    </update>
 

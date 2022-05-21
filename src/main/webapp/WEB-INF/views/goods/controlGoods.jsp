@@ -73,28 +73,8 @@
 	<td>${dto.gname}</td>
 	<td>${dto.gprice}</td>
 	<td>${dto.gamount}</td>
-	<td>
-		<table>
-			<c:forEach var="vdto" items="${vlist}" varStatus="status">
-				<c:if test="${vdto.gcode == dto.gcode}">
-					<tr>
-					<td>${vdto.vcategory}</td>
-					</tr>
-				</c:if>
-			</c:forEach>
-		</table>
-	</td>
-	<td>
-		<table>
-			<c:forEach var="bdto" items="${blist}" varStatus="status">
-				<c:if test="${bdto.gcode == dto.gcode}">
-					<tr>
-					<td>${bdto.bcategory}개 당 ${bdto.bprice}</td>
-					</tr>
-				</c:if>
-			</c:forEach>
-		</table>
-	</td>
+	<td>${dto.variation}</td>
+	<td>${dto.bundle}</td>
 	<td><button class="goodsUpdate" data-gcode="${dto.gcode}">수정</button></td>
 	<td><button class="goodsDelete" data-gcode="${dto.gcode}">삭제</button></td>
 	</tr>
